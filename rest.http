@@ -1,0 +1,25 @@
+### Main api
+GET http://localhost:8000/localhost:8000/api/v1/admin-user
+
+### post new admin user
+POST  http://localhost:8000/api/v1/admin-user
+Content-Type: application/json
+
+{
+     "fName": "Subin",
+    "lName": "Basnet",
+    "email": "subin@basnet10101011.com",
+    "password": "subin",
+    "phone": "98098098098",
+    "address": "sydney",
+    "dob": "2020-12-12"
+}
+### login admin user
+POST  http://localhost:8000/api/v1/admin-user/login
+Content-Type: application/json
+
+{
+    "email": "ram@7.com",
+    "password": "12"
+  
+}
