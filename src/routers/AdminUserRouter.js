@@ -15,6 +15,7 @@ import {
   userVerificationNotification,
   verificationEmail,
 } from "../helper/emailHelper.js";
+import { createJWSToken } from "../helper/jwtHelper.js";
 
 const router = express.Router();
 
@@ -96,10 +97,13 @@ router.post("/login", loginValidation, async (req, res, next) => {
       const isMatched = await comparePassword(password, user.password);
       if (isMatched) {
         user.password = undefined;
+
+        const jwts = await createJWSToken({ email });
         return res.json({
           status: "success",
           message: "Login successfully",
           user,
+          ...jwts,
         });
       }
     }
@@ -112,4 +116,5 @@ router.post("/login", loginValidation, async (req, res, next) => {
     next(error);
   }
 });
+
 export default router;
