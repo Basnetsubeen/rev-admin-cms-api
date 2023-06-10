@@ -18,6 +18,8 @@ dbConnection();
 //routers
 import adminUserRouter from "./src/routers/AdminUserRouter.js";
 app.use("/api/v1/admin-user", adminUserRouter);
+import categoryRouter from "./src/routers/CategoryRouter.js";
+app.use("/api/v1/category", categoryRouter);
 
 //Test
 app.use("/", (req, res, next) => {

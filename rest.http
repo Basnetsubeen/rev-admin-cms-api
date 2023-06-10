@@ -23,3 +23,19 @@ Content-Type: application/json
     "password": "12"
   
 }
+ ###  =========================  ###
+
+
+### Insert Category
+POST  http://localhost:8000/api/v1/category
+Content-Type: application/json
+
+{
+   "status": "active",
+    "name": "Window",
+    "parentId": "6483cc10290d801699d14f45"
+  
+}
+
+### Get category
+GET http://localhost:8000/api/v1/category
