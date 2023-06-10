@@ -14,3 +14,18 @@ export const getCategoryById = (_id) => {
 export const getAllCategories = () => {
   return CategorySchema.find();
 };
+
+//update category
+export const updateCategoryById = ({ _id, ...update }) => {
+  return CategorySchema.findByIdAndUpdate(_id, update, { new: true });
+};
+//has child category
+export const hasChildCategoryById = async (parentId) => {
+  const childCategory = await CategorySchema.findOne({ parentId });
+  return childCategory?._id ? true : false;
+};
+
+//Delete category
+export const deleteCategoryById = (_id) => {
+  return CategorySchema.findByIdAndDelete(_id);
+};

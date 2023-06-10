@@ -48,12 +48,26 @@ export const loginValidation = (req, res, next) => {
 };
 
 //=======Categories =======//
+
+//Insert Category
 export const categoryValidation = (req, res, next) => {
   req.body.parentId = req.body.parentId ? req.body.parentId : null;
   const schmea = Joi.object({
     status: STATUS,
     name: SHORTSTR.required(),
     parentId: SHORTSTR.allow(null, ""),
+  });
+  validator(schmea, req, res, next);
+};
+
+//Update Category
+export const updatecategoryValidation = (req, res, next) => {
+  req.body.parentId = req.body.parentId ? req.body.parentId : null;
+  const schmea = Joi.object({
+    status: STATUS,
+    name: SHORTSTR.required(),
+    parentId: SHORTSTR.allow(null, ""),
+    _id: SHORTSTR.required(),
   });
   validator(schmea, req, res, next);
 };
