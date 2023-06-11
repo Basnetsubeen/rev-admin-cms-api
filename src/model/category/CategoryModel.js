@@ -21,8 +21,8 @@ export const updateCategoryById = ({ _id, ...update }) => {
 };
 //has child category
 export const hasChildCategoryById = async (parentId) => {
-  const childCategory = await CategorySchema.findOne({ parentId });
-  return childCategory?._id ? true : false;
+  const category = await CategorySchema.findOne({ parentId });
+  return category?._id ? true : false;
 };
 
 //Delete category

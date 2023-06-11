@@ -5,7 +5,7 @@ export const insertAdminUser = (obj) => {
   return AdminUserSchema(obj).save();
 };
 
-//Update admin user
+//Update admin user to verify email
 export const updateAdminUser = (filter, update) => {
   return AdminUserSchema.findOneAndUpdate(filter, update, { new: true });
 };

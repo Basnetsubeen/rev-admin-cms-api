@@ -19,7 +19,8 @@ dbConnection();
 import adminUserRouter from "./src/routers/AdminUserRouter.js";
 app.use("/api/v1/admin-user", adminUserRouter);
 import categoryRouter from "./src/routers/CategoryRouter.js";
-app.use("/api/v1/category", categoryRouter);
+import { authMiddleware } from "./src/middlewares/auth-middleware/AuthMiddleware.js";
+app.use("/api/v1/category", authMiddleware, categoryRouter);
 
 //Test
 app.use("/", (req, res, next) => {
