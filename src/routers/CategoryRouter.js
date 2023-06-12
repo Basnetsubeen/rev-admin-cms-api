@@ -59,14 +59,17 @@ router.post("/", categoryValidation, async (req, res, next) => {
 // Update category
 router.put("/", updatecategoryValidation, async (req, res, next) => {
   try {
-    const hasChildCategory = await hasChildCategoryById(req.body._id);
-    if (hasChildCategory) {
-      return res.json({
-        status: "error",
-        message:
-          "This category has a child categories, please delete or re assign them to another category before taking the action",
-      });
+    if (req.body.parentId) {
+      const hasChildCategory = await hasChildCategoryById(req.body._id);
+      if (hasChildCategory) {
+        return res.json({
+          status: "error",
+          message:
+            "This category has a child categories, please delete or re assign them to another category before taking the action",
+        });
+      }
     }
+
     const category = await updateCategoryById(req.body);
     category?._id
       ? res.json({
@@ -90,7 +93,7 @@ router.delete("/:_id", async (req, res, next) => {
       return res.json({
         status: "error",
         message:
-          "This category has child category, You cammot delete this category.",
+          "This category has child category, You cannot delete this category.",
       });
     }
     const category = await deleteCategoryById(_id);

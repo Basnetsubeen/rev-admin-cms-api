@@ -39,3 +39,7 @@ Content-Type: application/json
 
 ### Get category
 GET http://localhost:8000/api/v1/category
+
+### 
+GET  http://localhost:8000/api/v1/admin-user/accessJwt
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpYmJ5QDEwLmNvbSIsImlhdCI6MTY4NjU0MzY3NywiZXhwIjoxNjg5MTM1Njc3fQ.IaRhuDJ6jTRJ_WcaG2zfN3_cqK05Xq16UV6tG0fwk2k

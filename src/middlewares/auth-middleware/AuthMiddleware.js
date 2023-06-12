@@ -14,7 +14,7 @@ export const authMiddleware = async (req, res, next) => {
     if (decoded === "jwt expired") {
       return res.status(403).json({
         status: "error",
-        message: "Token expired",
+        message: "jwt expired",
       });
     }
     if (decoded?.email) {

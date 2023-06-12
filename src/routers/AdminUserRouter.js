@@ -15,9 +15,31 @@ import {
   userVerificationNotification,
   verificationEmail,
 } from "../helper/emailHelper.js";
-import { createJWSToken } from "../helper/jwtHelper.js";
+import {
+  createJWSToken,
+  signAccessJWT,
+  verifyRefreshJWT,
+} from "../helper/jwtHelper.js";
+import { authMiddleware } from "../middlewares/auth-middleware/AuthMiddleware.js";
 
 const router = express.Router();
+
+//Get admin user
+router.get("/", authMiddleware, (req, res, next) => {
+  try {
+    const user = req.adminInfo;
+    user.password = undefined;
+    user.refreshJWT = undefined;
+    res.json({
+      status: "success",
+      message: "Here is ypur user.",
+      user,
+    });
+  } catch (error) {
+    error.status = 500;
+    next();
+  }
+});
 
 //Inserted the admin user, hash the password, generated unique code and send url linking to frontend to verify
 router.post("/", newAdminUserValidation, async (req, res, next) => {
@@ -117,4 +139,33 @@ router.post("/login", loginValidation, async (req, res, next) => {
   }
 });
 
+//Generate new accessJWT key for adminuser
+router.get("/accessJwt", async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+    console.log(authorization);
+    if (authorization) {
+      //First verify token received in authorization
+      const decoded = verifyRefreshJWT(authorization);
+      if (decoded?.email) {
+        //After verying token, find the adminUser based on decoded email
+        const user = await findOneAdminUser({ email: decoded.email });
+        //Once you find user, generate a new accessJWT for admin
+        if (user?._id) {
+          return res.json({
+            status: "success",
+            accessJWT: await signAccessJWT({ email: decoded.email }),
+          });
+        }
+      }
+    }
+    res.status(401).json({
+      status: "error",
+      message: "Unauthenticated",
+    });
+  } catch (error) {
+    error.status = 401;
+    next();
+  }
+});
 export default router;

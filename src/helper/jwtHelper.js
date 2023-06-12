@@ -51,3 +51,13 @@ export const verifyAccessJWT = (token) => {
     return message;
   }
 };
+
+//verifying accessJWT
+export const verifyRefreshJWT = (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch (error) {
+    error.status = 500;
+    message = error.message;
+  }
+};
