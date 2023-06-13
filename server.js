@@ -21,6 +21,8 @@ app.use("/api/v1/admin-user", adminUserRouter);
 import categoryRouter from "./src/routers/CategoryRouter.js";
 import { authMiddleware } from "./src/middlewares/auth-middleware/AuthMiddleware.js";
 app.use("/api/v1/category", authMiddleware, categoryRouter);
+import paymentMethodRouter from "./src/routers/paymentMethodRouter.js";
+app.use("/api/v1/payment-method", paymentMethodRouter);
 
 //Test
 app.use("/", (req, res, next) => {

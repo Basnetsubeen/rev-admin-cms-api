@@ -71,3 +71,22 @@ export const updatecategoryValidation = (req, res, next) => {
   });
   validator(schmea, req, res, next);
 };
+
+//Payment method
+export const newPaymentMethodValidation = (req, res, next) => {
+  const schmea = Joi.object({
+    status: STATUS,
+    name: SHORTSTR.required(),
+    description: LONGSTR.required(),
+  });
+  validator(schmea, req, res, next);
+};
+export const updatePaymentMethodValidation = (req, res, next) => {
+  const schmea = Joi.object({
+    _id: SHORTSTR.required(),
+    status: STATUS.required(),
+    name: SHORTSTR.required(),
+    description: LONGSTR.required(),
+  });
+  validator(schmea, req, res, next);
+};

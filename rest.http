@@ -33,7 +33,7 @@ Content-Type: application/json
 {
    "status": "active",
     "name": "Window",
-    "parentId": "6483cc10290d801699d14f45"
+    "parentId": ""
   
 }
 
@@ -43,3 +43,31 @@ GET http://localhost:8000/api/v1/category
 ### 
 GET  http://localhost:8000/api/v1/admin-user/accessJwt
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpYmJ5QDEwLmNvbSIsImlhdCI6MTY4NjU0MzY3NywiZXhwIjoxNjg5MTM1Njc3fQ.IaRhuDJ6jTRJ_WcaG2zfN3_cqK05Xq16UV6tG0fwk2k
+
+
+### ==========payment Method =========###
+### GET
+GET http://localhost:8000/api/v1/payment-method
+
+### POST
+POST http://localhost:8000/api/v1/payment-method
+Content-Type: application/json
+
+{
+    "status": "inactive",
+    "name": "Pay by credit card",
+    "description": "Follow the instruction to pay by credit card, AMEX not support"
+}
+
+### UPDATE
+PUT http://localhost:8000/api/v1/payment-method
+Content-Type: application/json
+
+{
+    "_id": "6487c1fc2a90a5b97b22de01",
+    "status": "active",
+    "name": "Pay by credit card ",
+    "description": "Follow the instruction to pay by credit card"
+}
+### Delete
+DELETE  http://localhost:8000/api/v1/payment-method/6487c1fc2a90a5b97b22de01
