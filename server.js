@@ -2,18 +2,23 @@ import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+
+//database connection
+import { dbConnection } from "./src/config/dbconfig.js";
+dbConnection();
 
 //middlewares
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
 
-//database connection
-import { dbConnection } from "./src/config/dbconfig.js";
-dbConnection();
+//serve static
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "public")));
 
 //routers
 import adminUserRouter from "./src/routers/AdminUserRouter.js";
@@ -23,6 +28,8 @@ import { authMiddleware } from "./src/middlewares/auth-middleware/AuthMiddleware
 app.use("/api/v1/category", authMiddleware, categoryRouter);
 import paymentMethodRouter from "./src/routers/paymentMethodRouter.js";
 app.use("/api/v1/payment-method", paymentMethodRouter);
+import productRouter from "./src/routers/ProductRouter.js";
+app.use("/api/v1/product", productRouter);
 
 //Test
 app.use("/", (req, res, next) => {

@@ -143,7 +143,6 @@ router.post("/login", loginValidation, async (req, res, next) => {
 router.get("/accessJwt", async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    console.log(authorization);
     if (authorization) {
       //First verify token received in authorization
       const decoded = verifyRefreshJWT(authorization);
