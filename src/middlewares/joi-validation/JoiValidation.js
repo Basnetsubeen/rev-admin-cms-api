@@ -92,6 +92,8 @@ export const updatePaymentMethodValidation = (req, res, next) => {
 };
 
 //  ======== products validation ========
+
+//Add product
 export const newProductValidation = (req, res, next) => {
   const { salesPrice, salesStartDate, salesEndDate } = req.body;
   req.body.salesPrice = salesPrice ? salesPrice : 0;
@@ -111,6 +113,33 @@ export const newProductValidation = (req, res, next) => {
     salesStartDate: DATE.allow(null),
     salesEndDate: DATE.allow(null),
     catId: SHORTSTR.required(),
+  });
+  validator(schmea, req, res, next);
+};
+
+//update prdoucts
+export const updateProductValidation = (req, res, next) => {
+  const { salesPrice, salesStartDate, salesEndDate } = req.body;
+  req.body.salesPrice = salesPrice ? salesPrice : 0;
+  req.body.salesStartDate =
+    !salesStartDate || salesStartDate === "null" ? null : salesStartDate;
+  req.body.salesEndDate =
+    !salesEndDate || salesEndDate === "null" ? null : salesEndDate;
+
+  const schmea = Joi.object({
+    _id: SHORTSTR.required(),
+    status: STATUS.required(),
+    name: SHORTSTR.required(),
+    description: LONGSTR.required(),
+    quantity: NUMBER.required(),
+    price: NUMBER.required(),
+    salesPrice: NUMBER,
+    salesStartDate: DATE.allow(null),
+    salesEndDate: DATE.allow(null),
+    catId: SHORTSTR.required(),
+    images: LONGSTR.required(),
+    thumbnail: LONGSTR.required(),
+    imgToDelete: LONGSTR.allow(""),
   });
   validator(schmea, req, res, next);
 };

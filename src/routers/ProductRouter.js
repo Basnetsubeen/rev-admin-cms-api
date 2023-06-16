@@ -4,8 +4,12 @@ import {
   deleteProductById,
   getAllProducts,
   getProductById,
+  updateProductById,
 } from "../model/product/ProductModel.js";
-import { newProductValidation } from "../middlewares/joi-validation/JoiValidation.js";
+import {
+  newProductValidation,
+  updateProductValidation,
+} from "../middlewares/joi-validation/JoiValidation.js";
 import slugify from "slugify";
 import multer from "multer";
 import fs from "fs";
@@ -38,6 +42,7 @@ router.get("/:_id?", async (req, res, next) => {
       products,
     });
   } catch (error) {
+    error.status = 500;
     next(error);
   }
 });
@@ -78,6 +83,49 @@ router.post(
         error.status = 200;
       }
 
+      next(error);
+    }
+  }
+);
+
+//Update product
+router.put(
+  "/",
+  upload.array("newImages", 5),
+  updateProductValidation,
+  async (req, res, next) => {
+    try {
+      const { body, files } = req;
+      //First we filter out the images to be deleted form the previously exisiting images.
+      let { images, imgToDelete } = body;
+      images = images.split(",");
+      imgToDelete = imgToDelete.split(",");
+
+      images = images.filter((img) => imgToDelete.includes(img));
+
+      //Second: If we add new images while editing, we need to loop it and add the path of images as we did in post product
+      if (files) {
+        const newImgs = files.map((img) => img.path.slice(6));
+
+        // we need to add images left from deleting and add to new incoming images to make a new image array and store
+        images = [...images, ...newImgs];
+      }
+
+      //overwiritng images the new images
+      body.images = images;
+
+      const product = await updateProductById(body);
+      product?._id
+        ? res.json({
+            status: "success",
+            message: "The product has been updated successfully",
+          })
+        : res.json({
+            status: "error",
+            message: "Unable to update the product, Please try again",
+          });
+    } catch (error) {
+      error.status = 500;
       next(error);
     }
   }
