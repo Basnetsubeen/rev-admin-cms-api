@@ -46,6 +46,30 @@ export const loginValidation = (req, res, next) => {
   });
   validator(schmea, req, res, next);
 };
+export const updateAdminUserValidation = (req, res, next) => {
+  //define rules
+  const schmea = Joi.object({
+    _id: SHORTSTR.required(),
+    fName: FNAME.required(),
+    lName: LNAME.required(),
+    phone: PHONE,
+    address: ADDRESS,
+    dob: DATE.allow("", null),
+  });
+  //give data to the rules
+  validator(schmea, req, res, next);
+};
+//validation for admin user password change
+export const updateAdminPasswordUserValidation = (req, res, next) => {
+  //define rules
+  const schmea = Joi.object({
+    _id: SHORTSTR.required(),
+    password: SHORTSTR.required(),
+    newPassword: SHORTSTR.required(),
+  });
+  //give data to the rules
+  validator(schmea, req, res, next);
+};
 
 //=======Categories =======//
 

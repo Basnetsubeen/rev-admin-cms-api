@@ -10,6 +10,8 @@ import {
   emailVerificationValidation,
   loginValidation,
   newAdminUserValidation,
+  updateAdminPasswordUserValidation,
+  updateAdminUserValidation,
 } from "../middlewares/joi-validation/JoiValidation.js";
 import {
   userVerificationNotification,
@@ -139,6 +141,74 @@ router.post("/login", loginValidation, async (req, res, next) => {
   }
 });
 
+//Update admin profile
+router.put(
+  "/",
+  authMiddleware,
+  updateAdminUserValidation,
+  async (req, res, next) => {
+    try {
+      const { _id, ...rest } = req.body;
+
+      const result = await updateAdminUser({ _id }, rest);
+      result?._id
+        ? res.json({
+            status: "success",
+            message: "The user has been updated",
+          })
+        : res.json({
+            status: "error",
+            message: "Unable to update the user profile, Please try again!!",
+          });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+//Update admin user Password
+router.patch(
+  "/",
+  authMiddleware,
+  updateAdminPasswordUserValidation,
+  async (req, res, next) => {
+    try {
+      const { password, _id, newPassword } = req.body;
+      const userId = req.adminInfo._id.toString();
+      if (_id !== userId) {
+        return res.status(401).json({
+          status: "error",
+          message: "Invalid user request",
+        });
+      }
+      const passwordFromDB = req.adminInfo.password;
+      const isMatched = comparePassword(password, passwordFromDB);
+
+      if (isMatched) {
+        const hashedPassword = hashPassword(newPassword);
+        const result = await updateAdminUser(
+          { _id },
+          {
+            password: hashedPassword,
+          }
+        );
+        if (result?._id) {
+          return res.json({
+            status: "success",
+            message: "Password has been successfully updated",
+          });
+        }
+      }
+      res.json({
+        status: "error",
+        message: "Unable to update the passsord. please try again!!",
+      });
+    } catch (error) {
+      error.status = 401;
+      next(error);
+    }
+  }
+);
 //Generate new accessJWT key for adminuser
 router.get("/accessJwt", async (req, res, next) => {
   try {
