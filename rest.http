@@ -23,6 +23,15 @@ Content-Type: application/json
     "password": "12"
   
 }
+
+### request otp for passwored reset
+POST http://localhost:8000/api/v1/admin-user/request-password-reset-otp
+Content-Type: application/json
+
+{
+"email": "sumina@4.com"
+}
+
  ###  =========================  ###
 
 

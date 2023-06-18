@@ -70,6 +70,17 @@ export const updateAdminPasswordUserValidation = (req, res, next) => {
   //give data to the rules
   validator(schmea, req, res, next);
 };
+//validation for forget password
+export const resetAdminPasswordUserValidation = (req, res, next) => {
+  //define rules
+  const schmea = Joi.object({
+    email: EMAIL.required(),
+    password: SHORTSTR.required(),
+    otp: NUMBER.required(),
+  });
+  //give data to the rules
+  validator(schmea, req, res, next);
+};
 
 //=======Categories =======//
 

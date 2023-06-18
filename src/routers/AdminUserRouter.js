@@ -10,10 +10,12 @@ import {
   emailVerificationValidation,
   loginValidation,
   newAdminUserValidation,
+  resetAdminPasswordUserValidation,
   updateAdminPasswordUserValidation,
   updateAdminUserValidation,
 } from "../middlewares/joi-validation/JoiValidation.js";
 import {
+  otpNotification,
   userVerificationNotification,
   verificationEmail,
 } from "../helper/emailHelper.js";
@@ -23,6 +25,11 @@ import {
   verifyRefreshJWT,
 } from "../helper/jwtHelper.js";
 import { authMiddleware } from "../middlewares/auth-middleware/AuthMiddleware.js";
+import { createOPTtokens } from "../../utilitis/RandomGenerator.js";
+import {
+  deleteSessiontable,
+  insertAcessJwt,
+} from "../model/session/SessionModel.js";
 
 const router = express.Router();
 
@@ -205,6 +212,83 @@ router.patch(
       });
     } catch (error) {
       error.status = 401;
+      next(error);
+    }
+  }
+);
+//Generate new OPT for admin user /request-password-reset-otp
+router.post("/request-password-reset-otp", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    //First check if it is an email or not.
+    if (email.includes("@")) {
+      //Then find the user based on that email.
+      const user = await findOneAdminUser({ email });
+      //If user exist, then create the token with random generator and store it in the session table.
+      if (user?._id) {
+        const filter = {
+          token: createOPTtokens(),
+          associate: email,
+          type: "updatePassword",
+        };
+        const result = await insertAcessJwt(filter);
+        //Then create and send the notification email with opt code.
+        if (result?._id) {
+          otpNotification({
+            fName: user.fName,
+            email,
+            opt: result.token,
+          });
+        }
+      }
+    }
+    res.json({
+      status: "success",
+      message:
+        "If the email exist in our system, We will send you an OTP, email and  reset instruction.",
+    });
+  } catch (error) {
+    error.status = 500;
+    next(error);
+  }
+});
+//Update the adminuser password if forgot.
+router.patch(
+  "/reset-password",
+  resetAdminPasswordUserValidation,
+  async (req, res, next) => {
+    try {
+      const { email, password, otp } = req.body;
+      const filter = {
+        token: otp,
+        associate: email,
+        type: "updatePassword",
+      };
+      // Based on filter first delete the admin info from session table.
+      const result = await deleteSessiontable(filter);
+      if (result?._id) {
+        // Then hashed the password received from the frontend.
+        const encryptedPass = hashPassword(password);
+        //Then update the amdin user by using email as a filter and update the password with encrypted password.
+        const user = await updateAdminUser(
+          { email },
+          {
+            password: encryptedPass,
+          }
+        );
+        if (user?._id) {
+          return res.json({
+            status: "success",
+            message: "The password has been updated successfully.",
+          });
+        }
+      }
+      res.json({
+        status: "error",
+        message: "Invalid request",
+      });
+    } catch (error) {
+      error.status = 500;
       next(error);
     }
   }
