@@ -30,6 +30,8 @@ import paymentMethodRouter from "./src/routers/paymentMethodRouter.js";
 app.use("/api/v1/payment-method", paymentMethodRouter);
 import productRouter from "./src/routers/ProductRouter.js";
 app.use("/api/v1/product", productRouter);
+import orderRouter from "./src/routers/orderRouter.js";
+app.use("/api/v1/order", orderRouter);
 
 //Test
 app.use("/", (req, res, next) => {
