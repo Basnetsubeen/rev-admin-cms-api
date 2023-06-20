@@ -27,11 +27,15 @@ import categoryRouter from "./src/routers/CategoryRouter.js";
 import { authMiddleware } from "./src/middlewares/auth-middleware/AuthMiddleware.js";
 app.use("/api/v1/category", authMiddleware, categoryRouter);
 import paymentMethodRouter from "./src/routers/paymentMethodRouter.js";
-app.use("/api/v1/payment-method", paymentMethodRouter);
+app.use("/api/v1/payment-method", authMiddleware, paymentMethodRouter);
 import productRouter from "./src/routers/ProductRouter.js";
-app.use("/api/v1/product", productRouter);
+app.use("/api/v1/product", authMiddleware, productRouter);
 import orderRouter from "./src/routers/orderRouter.js";
-app.use("/api/v1/order", orderRouter);
+app.use("/api/v1/order", authMiddleware, orderRouter);
+import reviewRouter from "./src/routers/ReviewRouter.js";
+app.use("/api/v1/reviews", authMiddleware, reviewRouter);
+import userRouter from "./src/routers/UserRouter.js";
+app.use("/api/v1/users", authMiddleware, userRouter);
 
 //Test
 app.use("/", (req, res, next) => {
