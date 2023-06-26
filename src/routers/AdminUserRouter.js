@@ -1,6 +1,8 @@
 import express from "express";
 import {
+  deleteAdminUser,
   findOneAdminUser,
+  getAllAdminUser,
   insertAdminUser,
   updateAdminUser,
 } from "../model/adminUser/AdminUserModel.js";
@@ -43,6 +45,21 @@ router.get("/", authMiddleware, (req, res, next) => {
       status: "success",
       message: "Here is ypur user.",
       user,
+    });
+  } catch (error) {
+    error.status = 500;
+    next();
+  }
+});
+
+//Get All admin user
+router.get("/all-admins", authMiddleware, async (req, res, next) => {
+  try {
+    const users = await getAllAdminUser();
+    res.json({
+      status: "success",
+      message: "Here is ypur user.",
+      users,
     });
   } catch (error) {
     error.status = 500;
@@ -319,6 +336,34 @@ router.get("/accessJwt", async (req, res, next) => {
   } catch (error) {
     error.status = 401;
     next();
+  }
+});
+
+//Delete adminuser by id
+router.delete("/:_id", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const users = await getAllAdminUser();
+    if (users.length <= 1) {
+      res.json({
+        status: "error",
+        message: "Sorry, your are the last user, Unable to deleted!!",
+      });
+    }
+
+    const result = await deleteAdminUser(_id);
+    if (result?._id) {
+      return res.json({
+        status: "success",
+        message: "The admin user has been deleted successfully.",
+      });
+    }
+    res.json({
+      status: "error",
+      message: "Unable to delete the user admin.",
+    });
+  } catch (error) {
+    next(error);
   }
 });
 export default router;

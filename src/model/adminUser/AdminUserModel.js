@@ -14,3 +14,13 @@ export const updateAdminUser = (filter, update) => {
 export const findOneAdminUser = (filter) => {
   return AdminUserSchema.findOne(filter);
 };
+
+//Get all admin users
+export const getAllAdminUser = () => {
+  return AdminUserSchema.find();
+};
+
+//delete admin users
+export const deleteAdminUser = (_id) => {
+  return AdminUserSchema.findByIdAndDelete(_id);
+};
